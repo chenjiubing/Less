@@ -77,10 +77,9 @@ Importing
 @import "lib";
 
 如果你想导入一个CSS文件而且不想LESS对它进行处理，只需要使用.css后缀就可以:
-
+这样LESS就会跳过它不去处理它.
 @import "lib.css"; //生成的CSS文件也是【@import "lib.css";】
 
-这样LESS就会跳过它不去处理它.
 字符串插值
 
 变量可以用类似ruby和php的方式嵌入到字符串中，像@{name}这样的结构:
