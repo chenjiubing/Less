@@ -1,0 +1,134 @@
+运算
+
+任何数字、颜色或者变量都可以参与运算. 来看一组例子:
+
+@base: 5%;
+@filler: @base * 2;
+@other: @base + @filler;
+
+color: #888 / 4;
+background-color: @base-color + #111;
+height: 100% / 2 + @filler;
+
+LESS 的运算已经超出了我们的期望，它能够分辨出颜色和单位。如果像下面这样单位运算的话:
+@var: 1px + 5;
+LESS 会输出 6px.
+括号也同样允许使用:
+width: (@var + 5) * 2;
+
+并且可以在复合属性中进行运算:
+border: (@width * 2) solid black;
+
+
+命名空间
+有时候，你可能为了更好组织CSS或者单纯是为了更好的封装，将一些变量或者混合模块打包起来, 你可以像下面这样在#bundle中定义一些属性集之后可以重复使用:
+
+#bundle {
+  .button () {
+    display: block;
+    border: 1px solid black;
+    background-color: grey;
+    &:hover { background-color: white }
+  }
+  .tab { ... }
+  .citation { ... }
+}
+
+你只需要在 #header a中像这样引入 .button:
+
+#header a {
+  color: orange;
+  #bundle > .button;
+}
+
+
+作用域
+LESS 中的作用域跟其他编程语言非常类似，首先会从本地查找变量或者混合模块，如果没找到的话会去父级作用域中查找，直到找到为止.
+
+@var: red;
+
+#page {
+  @var: white;
+  #header {
+    color: @var; // white
+  }
+}
+
+#footer {
+  color: @var; // red  
+}
+
+注释
+CSS 形式的注释在 LESS 中是依然保留的:
+
+/* Hello, I'm a CSS-style comment */
+.class { color: black }
+
+LESS 同样也支持双斜线的注释, 但是编译成 CSS 的时候自动过滤掉:
+// Hi, I'm a silent comment, I won't show up in your CSS
+.class { color: white }
+
+
+
+Importing
+你可以在main文件中通过下面的形势引入 .less 文件, .less 后缀可带可不带:
+
+@import "lib.less";
+@import "lib";
+
+如果你想导入一个CSS文件而且不想LESS对它进行处理，只需要使用.css后缀就可以:
+
+@import "lib.css"; //生成的CSS文件也是【@import "lib.css";】
+
+这样LESS就会跳过它不去处理它.
+字符串插值
+
+变量可以用类似ruby和php的方式嵌入到字符串中，像@{name}这样的结构:
+
+@base-url: "http://assets.fnord.com";
+background-image: url("@{base-url}/images/bg.png");
+
+避免编译
+有时候我们需要输出一些不正确的CSS语法或者使用一些 LESS不认识的专有语法.
+要输出这样的值我们可以在字符串前加上一个 ~, 例如:
+
+.class {
+  filter: ~"ms:alwaysHasItsOwnSyntax.For.Stuff()";
+}
+
+我们可以将要避免编译的值用 “”包含起来，输出结果为:
+
+.class {
+  filter: ms:alwaysHasItsOwnSyntax.For.Stuff();
+}
+
+
+//a.less
+.class {
+    widht: ~"kjslkjojod112ssss";
+    widht: "kjslkjojod112ssss";
+}
+//output
+.class {
+  widht: kjslkjojod112ssss;
+  widht: "kjslkjojod112ssss";
+}
+
+JavaScript 表达式
+JavaScript 表达式也可以在.less 文件中使用. 可以通过反引号的方式使用:
+@var: `"hello".toUpperCase() + '!'`;
+header {
+    width: @var;   
+}
+//output
+header {
+  width: "HELLO!";
+}
+
+//下面的这个编译不出来
+@str: "hello";
+@var: ~`"@{str}".toUpperCase() + '!'`;
+footer {
+    width: @var;
+}
+
