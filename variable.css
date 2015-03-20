@@ -1,0 +1,31 @@
+# 变量
+//a.scss
+
+@color:     #ccc;
+@nice-blue: #ddd;
+@light:     @nice-blue + #111;
+
+#header {
+    color: @color;
+}
+
+h2 {
+    color: @color;
+}
+
+#footer {
+    color: @light;
+}
+
+//output
+#header {
+  color: #cccccc;
+}
+h2 {
+  color: #cccccc;
+}
+#footer {
+  color: #eeeeee;
+}
+
+
